@@ -5,10 +5,11 @@ import App from './App'
 
 const reducer = state => {
   if (state === null) {
-    return {
+    return { 
       balanceOf: 0,
       transferableBalanceOf: 0,
-      syncing: true }
+      isSyncing: true 
+    }
   }
   return state
 }

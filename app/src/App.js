@@ -5,15 +5,16 @@ import styled from 'styled-components'
 
 function App() {
   const { api, appState } = useAragonApi()
-  const { balanceOf, transferableBalanceOf, syncing } = appState
+  const { balanceOf, transferableBalanceOf, isSyncing } = appState
+  console.log(balanceOf, transferableBalanceOf, isSyncing)
   return (
     <Main>
       <BaseLayout>
-        {syncing && <Syncing />}
+        {isSyncing && <Syncing />}
         <Count>BalanceOf: {balanceOf}</Count>
         <Count>TransferableBalanceOf: {transferableBalanceOf}</Count>
         <Buttons>
-          <Button mode="secondary" onClick={() => api.lock(1)}>
+          <Button mode="secondary" onClick={() => api.lock(1).toPromise()}>
             Lock
           </Button>
         </Buttons>

@@ -1,45 +1,59 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
-import { of } from 'rxjs'
-import AragonApi from '@aragon/api'
+import Aragon, { events } from '@aragon/api'
 
-const INITIALIZATION_TRIGGER = Symbol('INITIALIZATION_TRIGGER')
+const app = new Aragon()
 
-const api = new AragonApi()
+app.store(async (state, { event, returnValues, blockNumber, address }) => {
+  let nextState = { ...state }
 
-api.store(
-  async (state, event) => {
-    let newState
-
-    switch (event.event) {
-      case INITIALIZATION_TRIGGER:
-        newState = { 
-          balanceOf: await getBalanceOf(),
-          transferableBalanceOf: await getTransferableBalanceOf()
-        }
-        break
-      case 'NewLock':
-        newState = {
-          balanceOf: await getBalanceOf(),
-          transferableBalanceOf: await getTransferableBalanceOf()
-        }
-        break
-      default:
-        newState = state
+  // Initial state
+  if (state == null) {
+    nextState = {
+      balanceOf: 0,
+      transferableBalanceOf: 0,
     }
+  } 
 
-    return newState
-  },
-  [
-    // Always initialize the store with our own home-made event
-    of({ event: INITIALIZATION_TRIGGER }),
-  ]
-)
+  switch (event) {
+    case events.ACCOUNTS_TRIGGER:
+        return updateConnectedAccount(nextState, returnValues)
+    case events.SYNC_STATUS_SYNCING:
+      nextState = { ...nextState, isSyncing: true }
+      break
+    case events.SYNC_STATUS_SYNCED:
+      nextState = { ...nextState, isSyncing: false }
+      break
+    case 'NewLock':
+      return newLock(nextState, returnValues)
+    default:
+      return state
+  }
 
-async function getBalanceOf() {
-  return parseInt(await api.call('balanceOf', "0xb4124cEB3451635DAcedd11767f004d8a28c6eE7").toPromise(), 10)
+  return nextState
+})
+
+async function updateConnectedAccount(state, { account }) {
+  return {
+    ...state,
+    account,
+  }
 }
 
-async function getTransferableBalanceOf() {
-  return parseInt(await api.call('transferableBalanceOf', "0xb4124cEB3451635DAcedd11767f004d8a28c6eE7").toPromise(), 10)
+async function newLock(state, { vestingId, lockAddress, amount }) {
+  const { account } = state
+  console.log('lock_info', vestingId, lockAddress, amount)
+  return {
+    ...state,
+    balanceOf: await getBalanceOf(account),
+    transferableBalanceOf: await getTransferableBalanceOf(account),
+  }
+}
+
+async function getBalanceOf(address) {
+  return parseInt(await app.call('balanceOf', address).toPromise(), 10)  
+}
+
+async function getTransferableBalanceOf(address) {
+  return parseInt(await app.call('transferableBalanceOf', address).toPromise(), 10)
 }
