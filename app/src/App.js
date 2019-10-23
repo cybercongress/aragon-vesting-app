@@ -1,51 +1,52 @@
-import React from 'react'
-import { useAragonApi } from '@aragon/api-react'
-import { Main, Button } from '@aragon/ui'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
+import { useAragonApi } from '@aragon/api-react';
+import { Main, Text, AppView } from '@aragon/ui';
+
+import ClaimTable from './containers/ClaimTable';
+import CreateClaim from './containers/CreateClaim';
 
 function App() {
-  const { api, appState } = useAragonApi()
-  const { balanceOf, transferableBalanceOf, isSyncing } = appState
-  console.log(balanceOf, transferableBalanceOf, isSyncing)
+  const { appState } = useAragonApi();
+  const { isSyncing } = appState;
+
   return (
     <Main>
-      <BaseLayout>
+      <AppContainer
+        appBar={
+          <Header>
+            <Text size="xlarge">Claim CYB tokens</Text>
+            <ClaimButton />
+          </Header>
+        }
+      >
         {isSyncing && <Syncing />}
-        <Count>BalanceOf: {balanceOf}</Count>
-        <Count>TransferableBalanceOf: {transferableBalanceOf}</Count>
-        <Buttons>
-          <Button mode="secondary" onClick={() => api.lock(1).toPromise()}>
-            Lock
-          </Button>
-        </Buttons>
-      </BaseLayout>
+        <ClaimTable />
+      </AppContainer>
     </Main>
-  )
+  );
 }
 
-const BaseLayout = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  flex-direction: column;
-`
-
-const Count = styled.h1`
-  font-size: 30px;
-`
-
-const Buttons = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: 40px;
-  margin-top: 20px;
-`
+const AppContainer = styled(AppView)`
+  padding: 0 70px;
+`;
 
 const Syncing = styled.div.attrs({ children: 'Syncing…' })`
   position: absolute;
   top: 15px;
   right: 20px;
-`
+`;
 
-export default App
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 30px;
+`;
+
+const ClaimButton = styled(CreateClaim)`
+  font-size: 16px;
+  padding: 10px 40px;
+`;
+
+export default App;
