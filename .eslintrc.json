@@ -21,16 +21,7 @@
   "rules": {
     "valid-jsdoc": "error",
     "react/prop-types": 0,
-    "prettier/prettier": [
-      "error",
-      {
-        "singleQuote": true,
-        "semi": false,
-        "trailingComma": "es5",
-        "bracketSpacing": true,
-        "jsxBracketSameLine": false
-      }
-    ],
+    "prettier/prettier": "error",
     "linebreak-style": ["error", "unix"]
   }
 }
