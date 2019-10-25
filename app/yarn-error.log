@@ -1,0 +1,61 @@
+Arguments: 
+  /usr/local/bin/node /Users/litvintech/.yarn/bin/yarn.js add @babel/core -D
+
+PATH: 
+  /usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin:/Users/litvintech/Projects/other/aragon_sandbox/trash/aragon-claim-app/app/node_modules/.bin:/Users/litvintech/.yarn/bin:/Users/litvintech/.config/yarn/global/node_modules/.bin:/Users/litvintech/.local/bin:/Users/litvintech/Downloads/google-cloud-sdk/bin:/usr/local/opt/openssl/bin:/anaconda3/bin:/usr/local/opt/openssl/bin:/usr/local/opt/openssl/bin:/Users/litvintech/.cargo/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/go/bin:/usr/local/MacGPG2/bin:/Applications/Wireshark.app/Contents/MacOS:/Users/litvintech/golang/bin:/usr/local/opt/go/libexec/bin
+
+Yarn version: 
+  1.12.3
+
+Node version: 
+  10.13.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Users/litvintech/Projects/other/aragon_sandbox/trash/aragon-claim-app/app/package.json: Unexpected token } in JSON at position 350
+      at JSON.parse (<anonymous>)
+      at /Users/litvintech/.yarn/lib/cli.js:1631:59
+      at Generator.next (<anonymous>)
+      at step (/Users/litvintech/.yarn/lib/cli.js:304:30)
+      at /Users/litvintech/.yarn/lib/cli.js:315:13
+
+npm manifest: 
+  {
+    "name": "cyber-claim-frontend",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "dependencies": {
+      "@aragon/api": "^2.0.0-beta.7",
+      "@aragon/api-react": "^2.0.0-beta.6",
+      "@aragon/ui": "^0.40.1",
+      "core-js": "^3.1.4",
+      "react": "^16.8.6",
+      "react-dom": "^16.8.6",
+      "regenerator-runtime": "^0.13.2",
+      "rxjs": "^6.5.2",
+    },
+    "devDependencies": {
+      "@babel/core": "^7.5.4",
+      "@babel/plugin-proposal-class-properties": "^7.5.0",
+      "@babel/preset-env": "^7.5.4",
+      "copyfiles": "^2.1.1",
+      "parcel-bundler": "^1.12.3"
+    },
+    "scripts": {
+      "build": "npm run sync-assets && npm run build:app && npm run build:script",
+      "build:app": "parcel build index.html -d ../dist/ --public-url \".\" --no-cache",
+      "build:script": "parcel build src/script.js --out-dir ../dist/ --no-cache",
+      "watch:script": "parcel watch src/script.js --out-dir ../dist/ --no-hmr",
+      "devserver": "parcel serve index.html -p 8001 --out-dir ../dist/ --no-cache",
+      "start": "npm run sync-assets && npm run build:script -- --no-minify && npm run devserver",
+      "sync-assets": "copy-aragon-ui-assets ../dist && copyfiles './public/**/*' ../dist"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

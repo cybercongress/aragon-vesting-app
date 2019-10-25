@@ -1,6 +1,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import Aragon, { events } from '@aragon/api';
+import { addressesEqual } from './lib/web3-utils'
 import tokenManagerAbi from './abi/TokenManager';
 import tokenAbi from './abi/MiniMeToken';
 import retryEvery from './lib/retry-every'
@@ -73,11 +74,27 @@ async function updateConnectedAccount(
   state,
   tokenManagerContract,
   tokenContract,
-  { account }
-) {
+  { account }) 
+{
+  const claimsCount = await tokenManagerContract.vestingsLengths(account).toPromise()
+  const claims = []
+
+  for (let i = 0; i < claimsCount; i++) {
+    let { amount, start, cliff, vesting } = await tokenManagerContract
+      .getVesting(account, i)
+      .toPromise()
+      claims.push({ 
+        amount: amount,
+        start: start,
+        cliff: cliff,
+        vesting: vesting
+      })
+  }
+
   return {
     ...state,
     account,
+    claims,
     balanceOf: await getBalanceOf(tokenContract, account),
     transferableBalanceOf: await getTransferableBalanceOf(
       tokenManagerContract,
@@ -90,12 +107,24 @@ async function newLock(
   state,
   tokenManagerContract,
   tokenContract,
-  { vestingId, lockAddress, amount }
+  { vestingId, lockAddress, claim }
 ) {
-  const { account } = state;
+  const { account, claims } = state;
+  
+  if (!(account && addressesEqual(lockAddress, account))) return state
+
+  console.log("claims", claims);
+  let { amount, start, cliff, vesting } = await tokenManagerContract
+    .getVesting(account, vestingId).toPromise();
 
   return {
     ...state,
+    claims: [...claims, { 
+      amount: amount,
+      start: start,
+      cliff: cliff,
+      vesting: vesting
+    }],
     balanceOf: await getBalanceOf(tokenContract, account),
     transferableBalanceOf: await getTransferableBalanceOf(
       tokenManagerContract,
