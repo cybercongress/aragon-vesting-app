@@ -3,13 +3,21 @@ import 'regenerator-runtime/runtime';
 import Aragon, { events } from '@aragon/api';
 import tokenManagerAbi from './abi/TokenManager';
 import tokenAbi from './abi/MiniMeToken';
+import retryEvery from './lib/retry-every'
 
 const app = new Aragon();
 
-initialize();
+retryEvery(() =>
+  app
+    .call('tokenManager')
+    .subscribe(initialize, err =>
+      console.error(
+        `Could not start background script execution due to the contract not loading tokenManager: ${err}`
+      )
+    )
+)
 
-async function initialize() {
-  const tokenManagerAddress = await app.call('tokenManager').toPromise();
+async function initialize(tokenManagerAddress) {
   const tokenManagerContract = app.external(
     tokenManagerAddress,
     tokenManagerAbi

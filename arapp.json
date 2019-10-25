@@ -6,15 +6,15 @@
       "params": []
     },
     {
-      "name": "Access lock",
-      "id": "LOCK_ROLE",
+      "name": "Add Proof for claim",
+      "id": "PROOF_ROLE",
       "params": []
     }
   ],
   "environments": {
     "default": {
       "network": "development",
-      "appName": "claim.open.aragonpm.eth"
+      "appName": "claim2.open.aragonpm.eth"
     },
     "rinkeby": {
       "registry": "0x98df287b6c145399aaa709692c8d308357bc085d",

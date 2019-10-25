@@ -67,7 +67,7 @@ contract Template is TemplateBase {
         acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
 
         address root = msg.sender;
-        bytes32 appId = keccak256(abi.encodePacked(apmNamehash("open"), keccak256("claim")));
+        bytes32 appId = keccak256(abi.encodePacked(apmNamehash("open"), keccak256("claim2")));
         bytes32 votingAppId = apmNamehash("voting");
         bytes32 tokenManagerAppId = apmNamehash("token-manager");
 
@@ -79,7 +79,7 @@ contract Template is TemplateBase {
         token.changeController(tokenManager);
 
         // Initialize apps
-        app.initialize(address(token), address(tokenManager), uint64(100000)); // Debug. Remove token
+        app.initialize(tokenManager, uint64(100000)); // TODO initialize with auction contract
         tokenManager.initialize(token, true, 0);
         voting.initialize(token, 50 * PCT, 20 * PCT, 1 minutes);
 
@@ -89,9 +89,9 @@ contract Template is TemplateBase {
         acl.createPermission(app, tokenManager, tokenManager.ASSIGN_ROLE(), voting);
         acl.createPermission(app, tokenManager, tokenManager.BURN_ROLE(), voting);
         acl.createPermission(root, app, app.PAUSE_ROLE(), root);
-        acl.createPermission(ANY_ENTITY, app, app.LOCK_ROLE(), root); // remove or change to token oracle?
+        acl.createPermission(root, app, app.PROOF_ROLE(), root);
 
-        tokenManager.mint(root, 10); // Give 10 token to root
+        tokenManager.mint(root, 100);
 
         acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
 
@@ -105,6 +105,8 @@ contract Template is TemplateBase {
         acl.grantPermission(root, acl, acl.CREATE_PERMISSIONS_ROLE());
         acl.revokePermission(this, acl, acl.CREATE_PERMISSIONS_ROLE());
         acl.setPermissionManager(root, acl, acl.CREATE_PERMISSIONS_ROLE());
+
+        acl.revokePermission(this, tokenManager, tokenManager.MINT_ROLE());
 
         emit DeployInstance(dao);
     }

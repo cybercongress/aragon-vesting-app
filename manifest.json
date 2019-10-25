@@ -1,16 +1,16 @@
 {
-  "name": "Claim",
-  "author": "Placeholder-author",
-  "description": "An application for Aragon",
+  "name": "cyber~Claim",
+  "author": "cyber~Congress",
+  "description": "Tokens vesting for claims",
   "details_url": "/meta/details.md",
-  "source_url": "https://<placeholder-repository-url>",
+  "source_url": "https://github.com/cybercongress/aragon-claim-app",
   "icons": [
     {
       "src": "/meta/icon.svg",
       "sizes": "56x56"
     }
   ],
-  "screenshots": [{ "src": "/meta/screenshot-1.png" }],
+  "screenshots": [{ "src": "/meta/claim-screen.png" }],
   "start_url": "/index.html",
   "script": "/script.js"
 }
