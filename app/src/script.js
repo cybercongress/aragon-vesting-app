@@ -1,59 +1,108 @@
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
-import Aragon, { events } from '@aragon/api'
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import Aragon, { events } from '@aragon/api';
+import tokenManagerAbi from './abi/TokenManager';
+import tokenAbi from './abi/MiniMeToken';
 
-const app = new Aragon()
+const app = new Aragon();
 
-app.store(async (state, { event, returnValues, blockNumber, address }) => {
-  let nextState = { ...state }
+initialize();
 
-  // Initial state
-  if (state == null) {
-    nextState = {
-      balanceOf: 0,
-      transferableBalanceOf: 0,
+async function initialize() {
+  const tokenManagerAddress = await app.call('tokenManager').toPromise();
+  const tokenManagerContract = app.external(
+    tokenManagerAddress,
+    tokenManagerAbi
+  );
+  const tokenAddress = await tokenManagerContract.token().toPromise();
+  const tokenContract = app.external(tokenAddress, tokenAbi);
+
+  return createStore(tokenManagerContract, tokenContract);
+}
+
+async function createStore(tokenManagerContract, tokenContract) {
+  app.store(async (state, { event, returnValues, blockNumber, address }) => {
+    let nextState = { ...state };
+
+    // Initial state
+    if (state == null) {
+      nextState = {
+        balanceOf: 0,
+        transferableBalanceOf: 0,
+      };
     }
-  } 
 
-  switch (event) {
-    case events.ACCOUNTS_TRIGGER:
-        return updateConnectedAccount(nextState, returnValues)
-    case events.SYNC_STATUS_SYNCING:
-      nextState = { ...nextState, isSyncing: true }
-      break
-    case events.SYNC_STATUS_SYNCED:
-      nextState = { ...nextState, isSyncing: false }
-      break
-    case 'NewLock':
-      return newLock(nextState, returnValues)
-    default:
-      return state
-  }
+    switch (event) {
+      case events.ACCOUNTS_TRIGGER:
+        return updateConnectedAccount(
+          nextState,
+          tokenManagerContract,
+          tokenContract,
+          returnValues
+        );
+      case events.SYNC_STATUS_SYNCING:
+        nextState = { ...nextState, isSyncing: true };
+        break;
+      case events.SYNC_STATUS_SYNCED:
+        nextState = { ...nextState, isSyncing: false };
+        break;
+      case 'NewLock':
+        return newLock(
+          nextState,
+          tokenManagerContract,
+          tokenContract,
+          returnValues
+        );
+      default:
+        return state;
+    }
 
-  return nextState
-})
+    return nextState;
+  });
+}
 
-async function updateConnectedAccount(state, { account }) {
+async function updateConnectedAccount(
+  state,
+  tokenManagerContract,
+  tokenContract,
+  { account }
+) {
   return {
     ...state,
     account,
-  }
+    balanceOf: await getBalanceOf(tokenContract, account),
+    transferableBalanceOf: await getTransferableBalanceOf(
+      tokenManagerContract,
+      account
+    ),
+  };
 }
 
-async function newLock(state, { vestingId, lockAddress, amount }) {
-  const { account } = state
-  console.log('lock_info', vestingId, lockAddress, amount)
+async function newLock(
+  state,
+  tokenManagerContract,
+  tokenContract,
+  { vestingId, lockAddress, amount }
+) {
+  const { account } = state;
+
   return {
     ...state,
-    balanceOf: await getBalanceOf(account),
-    transferableBalanceOf: await getTransferableBalanceOf(account),
-  }
+    balanceOf: await getBalanceOf(tokenContract, account),
+    transferableBalanceOf: await getTransferableBalanceOf(
+      tokenManagerContract,
+      account
+    ),
+  };
 }
 
-async function getBalanceOf(address) {
-  return parseInt(await app.call('balanceOf', address).toPromise(), 10)  
+async function getBalanceOf(tokenContract, address) {
+  return parseInt(await tokenContract.balanceOf(address).toPromise(), 10);
 }
 
-async function getTransferableBalanceOf(address) {
-  return parseInt(await app.call('transferableBalanceOf', address).toPromise(), 10)
+async function getTransferableBalanceOf(tokenManagerContract, address) {
+  return parseInt(
+    await tokenManagerContract.spendableBalanceOf(address).toPromise(),
+    10
+  );
 }
