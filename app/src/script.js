@@ -107,13 +107,14 @@ async function newLock(
   state,
   tokenManagerContract,
   tokenContract,
-  { vestingId, lockAddress, claim }
+  { vestingId, claimAccount, claimAmount, cyberAccount }
 ) {
   const { account, claims } = state;
   
-  if (!(account && addressesEqual(lockAddress, account))) return state
+  if (!(account && addressesEqual(claimAccount, account))) return state
 
   console.log("claims", claims);
+  console.log("cyberAccount", cyberAccount);
   let { amount, start, cliff, vesting } = await tokenManagerContract
     .getVesting(account, vestingId).toPromise();
 

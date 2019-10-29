@@ -23,9 +23,9 @@ function CreateClaim({ containerStyle, ...props }) {
         maxValue={transferableBalanceOf}
         opened={sidePanelOpened}
         onClose={() => setSidePanelOpened(false)}
-        onSubmit={amount => {
+        onSubmit={(amount, account) => {
           setSidePanelOpened(false);
-          api.lock(amount).toPromise();
+          api.lock(amount, account).toPromise();
         }}
       />
     </div>

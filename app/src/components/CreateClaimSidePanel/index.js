@@ -4,6 +4,7 @@ import { SidePanel, Button, TextInput, Text, theme } from '@aragon/ui';
 
 function CreateClaimSidePanel({ opened, onClose, onSubmit, maxValue }) {
   const [amount, setAmount] = useState('');
+  const [account, setAccount  ] = useState('');
   const isValid = amount && amount > 0 && (!maxValue || amount <= maxValue);
 
   return (
@@ -18,10 +19,18 @@ function CreateClaimSidePanel({ opened, onClose, onSubmit, maxValue }) {
         value={amount}
         onChange={e => setAmount(e.target.value)}
       />
+      <AccountTitle size="xsmall" color={theme.textSecondary}>
+        Account <span style={{ color: theme.accent }}>*</span>
+      </AccountTitle>
+      <AccountInput
+        type="text"
+        value={account}
+        onChange={e => setAccount(e.target.value)}
+      />
       <Button
         mode="strong"
         disabled={!isValid}
-        onClick={() => onSubmit(amount)}
+        onClick={() => onSubmit(amount, account)}
       >
         Create claim
       </Button>
@@ -34,6 +43,14 @@ const AmountTitle = styled(Text)`
 `;
 
 const AmountInput = styled(TextInput)`
+  margin-bottom: 30px;
+`;
+
+const AccountTitle = styled(Text)`
+  margin-bottom: 5px;
+`;
+
+const AccountInput = styled(TextInput)`
   margin-bottom: 30px;
 `;
 
