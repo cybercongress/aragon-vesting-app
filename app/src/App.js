@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAragonApi } from '@aragon/api-react';
-import { Main, Text, AppView } from '@aragon/ui';
+import { Main, Text } from '@aragon/ui';
 
 import ClaimTable from './containers/ClaimTable';
+import ClaimHistoryTable from './containers/ClaimHistoryTable';
 import CreateClaim from './containers/CreateClaim';
 
 function App() {
@@ -12,23 +13,21 @@ function App() {
 
   return (
     <Main>
-      <AppContainer
-        appBar={
-          <Header>
-            <Text size="xlarge">Claim CYB tokens</Text>
-            <ClaimButton />
-          </Header>
-        }
-      >
+      <AppContainer>
+        <Header>
+          <Text size="xlarge">Claim CYB tokens</Text>
+          <ClaimButton />
+        </Header>
         {isSyncing && <Syncing />}
         <ClaimTable />
+        <ClaimHistory />
       </AppContainer>
     </Main>
   );
 }
 
-const AppContainer = styled(AppView)`
-  padding: 0 70px;
+const AppContainer = styled.div`
+  padding: 0 60px;
 `;
 
 const Syncing = styled.div.attrs({ children: 'Syncing…' })`
@@ -41,12 +40,16 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 30px;
+  padding: 30px 0;
 `;
 
 const ClaimButton = styled(CreateClaim)`
   font-size: 16px;
   padding: 10px 40px;
+`;
+
+const ClaimHistory = styled(ClaimHistoryTable)`
+  margin-top: 40px;
 `;
 
 export default App;

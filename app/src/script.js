@@ -1,10 +1,10 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import Aragon, { events } from '@aragon/api';
-import { addressesEqual } from './lib/web3-utils'
+import { addressesEqual, convertDate } from './lib/web3-utils';
 import tokenManagerAbi from './abi/TokenManager';
 import tokenAbi from './abi/MiniMeToken';
-import retryEvery from './lib/retry-every'
+import retryEvery from './lib/retry-every';
 
 const app = new Aragon();
 
@@ -16,7 +16,7 @@ retryEvery(() =>
         `Could not start background script execution due to the contract not loading tokenManager: ${err}`
       )
     )
-)
+);
 
 async function initialize(tokenManagerAddress) {
   const tokenManagerContract = app.external(
@@ -74,27 +74,16 @@ async function updateConnectedAccount(
   state,
   tokenManagerContract,
   tokenContract,
-  { account }) 
-{
-  const claimsCount = await tokenManagerContract.vestingsLengths(account).toPromise()
-  const claims = []
-
-  for (let i = 0; i < claimsCount; i++) {
-    let { amount, start, cliff, vesting } = await tokenManagerContract
-      .getVesting(account, i)
-      .toPromise()
-      claims.push({ 
-        amount: amount,
-        start: start,
-        cliff: cliff,
-        vesting: vesting
-      })
+  { account }
+) {
+  if (account && addressesEqual(state.account, account)) {
+    return state;
   }
 
   return {
     ...state,
     account,
-    claims,
+    claims: [],
     balanceOf: await getBalanceOf(tokenContract, account),
     transferableBalanceOf: await getTransferableBalanceOf(
       tokenManagerContract,
@@ -107,30 +96,49 @@ async function newLock(
   state,
   tokenManagerContract,
   tokenContract,
-  { vestingId, claimAccount, claimAmount, cyberAccount }
+  { vestingId, lockAddress, amount, account }
 ) {
-  const { account, claims } = state;
-  
-  if (!(account && addressesEqual(claimAccount, account))) return state
+  const {
+    start,
+    cliff,
+    vesting,
+    revokable,
+  } = await tokenManagerContract
+    .getVesting(state.account, vestingId)
+    .toPromise();
 
-  console.log("claims", claims);
-  console.log("cyberAccount", cyberAccount);
-  let { amount, start, cliff, vesting } = await tokenManagerContract
-    .getVesting(account, vestingId).toPromise();
+  const proof = await app.call('proofs', vestingId).toPromise();
+
+  const parsedAmount = parseInt(amount, 10);
+
+  const balanceOf =
+    state.balanceOf === undefined
+      ? await getBalanceOf(tokenContract, state.account)
+      : state.balanceOf;
+
+  const transferableBalanceOf =
+    state.transferableBalanceOf === undefined
+      ? await getTransferableBalanceOf(tokenManagerContract, state.account)
+      : state.transferableBalanceOf - parsedAmount;
 
   return {
     ...state,
-    claims: [...claims, { 
-      amount: amount,
-      start: start,
-      cliff: cliff,
-      vesting: vesting
-    }],
-    balanceOf: await getBalanceOf(tokenContract, account),
-    transferableBalanceOf: await getTransferableBalanceOf(
-      tokenManagerContract,
-      account
-    ),
+    claims: [
+      ...state.claims,
+      {
+        vestingId,
+        proof,
+        account,
+        revokable,
+        lockAddress,
+        start: convertDate(start),
+        cliff: convertDate(cliff),
+        vesting: convertDate(vesting),
+        amount: parsedAmount,
+      },
+    ],
+    balanceOf,
+    transferableBalanceOf,
   };
 }
 
