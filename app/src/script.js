@@ -36,6 +36,7 @@ async function createStore(tokenManagerContract, tokenContract) {
     // Initial state
     if (state == null) {
       nextState = {
+        claims: [],
         balanceOf: 0,
         transferableBalanceOf: 0,
       };
@@ -83,7 +84,6 @@ async function updateConnectedAccount(
   return {
     ...state,
     account,
-    claims: [],
     balanceOf: await getBalanceOf(tokenContract, account),
     transferableBalanceOf: await getTransferableBalanceOf(
       tokenManagerContract,
