@@ -63,6 +63,8 @@ async function createStore(tokenManagerContract, tokenContract) {
           tokenContract,
           returnValues
         );
+      case 'NewProof':
+        return newProof(nextState, returnValues);
       default:
         return state;
     }
@@ -106,9 +108,6 @@ async function newLock(
   } = await tokenManagerContract
     .getVesting(state.account, vestingId)
     .toPromise();
-
-  const proof = await app.call('proofs', vestingId).toPromise();
-
   const parsedAmount = parseInt(amount, 10);
 
   const balanceOf =
@@ -124,10 +123,9 @@ async function newLock(
   return {
     ...state,
     claims: [
-      ...state.claims,
+      ...(state.claims || []),
       {
         vestingId,
-        proof,
         account,
         revokable,
         lockAddress,
@@ -139,6 +137,27 @@ async function newLock(
     ],
     balanceOf,
     transferableBalanceOf,
+  };
+}
+
+async function newProof(state, { vestingId, proofTx }) {
+  const index = parseInt(vestingId, 10);
+  const claim = state.claims && state.claims[index];
+
+  if (!claim) {
+    return state;
+  }
+
+  return {
+    ...state,
+    claims: [
+      ...state.claims.slice(0, index),
+      {
+        ...claim,
+        proof: proofTx,
+      },
+      ...state.claims.slice(index + 1),
+    ],
   };
 }
 
