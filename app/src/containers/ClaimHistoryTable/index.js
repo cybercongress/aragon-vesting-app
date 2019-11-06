@@ -1,16 +1,17 @@
 import React from 'react';
 import { useAragonApi } from '@aragon/api-react';
-import { Text, DataView } from '@aragon/ui';
+import { Text, DataView, Link } from '@aragon/ui';
+import { formatCurrency } from '../../lib/web3-utils';
 
 const PAGINATION = 10;
 const DEFAULT_PROOF = 'Processing by cyber~Congress';
 
-function ClaimHistoryTable(props) {
+function ClaimHistoryTable({ style = {}, ...props }) {
   const { appState } = useAragonApi();
   const { userClaims } = appState;
 
   return (
-    <div {...props}>
+    <div style={{ wordBreak: 'break-all', ...style }} {...props}>
       {userClaims && userClaims.length > 0 && (
         <DataView
           fields={[
@@ -29,10 +30,24 @@ function ClaimHistoryTable(props) {
           ])}
           renderEntry={([vestingId, amount, start, account, proof]) => [
             <Text style={{ minWidth: '60px' }}>{vestingId}</Text>,
-            <Text style={{ minWidth: '60px' }}>{amount}</Text>,
+            <Text style={{ minWidth: '60px' }}>{formatCurrency(amount)}</Text>,
             <Text>{start.toLocaleString()}</Text>,
-            <Text>{account}</Text>,
-            <Text>{proof || DEFAULT_PROOF}</Text>,
+            <Link
+              style={{ whiteSpace: 'normal' }}
+              href={`https://cyberd.ai/account/${account}`}
+            >
+              {account}
+            </Link>,
+            proof ? (
+              <Link
+                style={{ whiteSpace: 'normal' }}
+                href={`https://cyberd.ai/transactions/${proof}`}
+              >
+                {proof}
+              </Link>
+            ) : (
+              <Text>{DEFAULT_PROOF}</Text>
+            ),
           ]}
           mode="table"
           entriesPerPage={PAGINATION}

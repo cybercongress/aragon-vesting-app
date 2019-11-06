@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Table, TableRow, TableCell, Text, theme } from '@aragon/ui';
+import { formatCurrency } from '../../lib/web3-utils';
 
 function SummaryTable({ total, available }) {
   return (
@@ -15,25 +16,25 @@ function SummaryTable({ total, available }) {
       <TableRow>
         <TableCell>
           <div>
-            <Text color={theme.textSecondary}>Total THC</Text>
+            <Text color={theme.textSecondary}>Total</Text>
             <br />
             <Text size="xxlarge" color={theme.positive}>
-              {total}
+              {formatCurrency(total)}
             </Text>
           </div>
         </TableCell>
         <TableCell>
           <div>
-            <Text color={theme.textSecondary}>CYBs claimed</Text>
+            <Text color={theme.textSecondary}>Claimed</Text>
             <br />
-            <Text size="xxlarge">{total - available}</Text>
+            <Text size="xxlarge">{formatCurrency(total - available)}</Text>
           </div>
         </TableCell>
         <TableCell>
           <div>
-            <Text color={theme.textSecondary}>CYBs available to claim</Text>
+            <Text color={theme.textSecondary}>Available</Text>
             <br />
-            <Text size="xxlarge">{available}</Text>
+            <Text size="xxlarge">{formatCurrency(available)}</Text>
           </div>
         </TableCell>
       </TableRow>
