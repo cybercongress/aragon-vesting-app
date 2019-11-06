@@ -4,7 +4,7 @@ import { SidePanel, Button, TextInput, Text, theme } from '@aragon/ui';
 
 function CreateClaimSidePanel({ opened, onClose, onSubmit, maxValue }) {
   const [amount, setAmount] = useState('');
-  const [account, setAccount  ] = useState('');
+  const [account, setAccount] = useState('');
   const isValid = amount && amount > 0 && (!maxValue || amount <= maxValue);
 
   return (

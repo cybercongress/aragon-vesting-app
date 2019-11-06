@@ -1,10 +1,16 @@
-import { toChecksumAddress } from 'web3-utils'
+import { toChecksumAddress } from 'web3-utils';
+
+const MILLISECONDS_IN_SECOND = 1000;
 
 // Check address equality without checksums
 export function addressesEqual(first, second) {
-  first = first && toChecksumAddress(first)
-  second = second && toChecksumAddress(second)
-  return first === second
+  return (
+    first && second && toChecksumAddress(first) === toChecksumAddress(second)
+  );
 }
 
-export { isAddress, toChecksumAddress, toUtf8, soliditySha3 } from 'web3-utils'
+export function convertDate(date) {
+  return new Date(parseInt(date, 10) * MILLISECONDS_IN_SECOND);
+}
+
+export { isAddress, toChecksumAddress, toUtf8, soliditySha3 } from 'web3-utils';
