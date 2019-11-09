@@ -15,7 +15,7 @@ function App() {
     <Main>
       <AppContainer>
         <Header>
-          <Text size="xlarge">Claim CYB tokens</Text>
+          <Text size="xlarge">Claim</Text>
           <ClaimButton />
         </Header>
         {isSyncing && <Syncing />}
