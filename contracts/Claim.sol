@@ -24,11 +24,11 @@ contract Claim is AragonApp {
 
     /// ERRORS
     string private constant ERROR_LOCK_ON_PAUSE = "LOCK_ON_PAUSE";
-    string private constant ERROR_PROOF_EXIST = "PROOF_EXIST";
     string private constant ERROR_WRONG_ACCOUNT = "WRONG_ACCOUNT";
+    string private constant ERROR_PAST_END = "PAST_END";
 
     function initialize(address _tokenManager, uint64 _vestingEnd) public onlyInit {
-        // require(_vestingEnd > getTimestamp64(), "Lock end should be in future");
+        require(_vestingEnd > getTimestamp64(), ERROR_PAST_END);
         tokenManager = TokenManager(_tokenManager);
         vestingEnd = _vestingEnd;
         paused = false;
@@ -45,21 +45,14 @@ contract Claim is AragonApp {
 
         // account example cyber1arvngwny4zxlk2xgzwjvt0w8l78yqr5tvnmue5
 
-        // TODO add prefix cyber validaton
         bytes memory accountBytes = bytes(account);
         require(accountBytes.length == 44, ERROR_WRONG_ACCOUNT);
 
         tokenManager.burn(msg.sender, amount);
         tokenManager.issue(amount);
 
-        // vesting timings for debug
-        uint64 start = getTimestamp64();
-        uint64 cliff = getTimestamp64() + uint64(500);
-        uint64 end = getTimestamp64() + uint64(1000);
-        uint256 vestingId = tokenManager.assignVested(msg.sender, amount, start, cliff, end, false);
+        uint256 vestingId = tokenManager.assignVested(msg.sender, amount, getTimestamp64(), vestingEnd, vestingEnd, false);
         transfers[vestingId] = account;
-
-        // assert supply
 
         emit NewLock(vestingId, msg.sender, amount, account);
 
@@ -67,7 +60,6 @@ contract Claim is AragonApp {
     }
 
     function addProof(uint256 _vestingId, string memory _proofTx) public auth(PROOF_ROLE) {
-        // require(proofs[_vestingId] == , ERROR_PROOF_EXIST);
         proofs[_vestingId] = _proofTx;
 
         emit NewProof(_vestingId, _proofTx);
