@@ -9,7 +9,7 @@ function SummaryTable({ total, available }) {
       <TableRow>
         <TableHeader colSpan="3">
           <Text color={theme.textSecondary} size="xsmall">
-            Your THC balance and claimed CYB tokens
+            After obtaining GOLs during Test of Thrones and Test~Auction you need to vest you GOL tokens until the end of Auction. In this case you will recieve 1 EUL for each vested GOL.
           </Text>
         </TableHeader>
       </TableRow>
@@ -25,7 +25,7 @@ function SummaryTable({ total, available }) {
         </TableCell>
         <TableCell>
           <div>
-            <Text color={theme.textSecondary}>Claimed</Text>
+            <Text color={theme.textSecondary}>Vested</Text>
             <br />
             <Text size="xxlarge">{formatCurrency(total - available)}</Text>
           </div>
