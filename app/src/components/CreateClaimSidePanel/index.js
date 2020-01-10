@@ -8,7 +8,7 @@ function CreateClaimSidePanel({ opened, onClose, onSubmit, maxValue }) {
   const isValid = amount && amount > 0 && (!maxValue || amount <= maxValue);
 
   return (
-    <SidePanel title="Create claim" opened={opened} onClose={onClose}>
+    <SidePanel title="Vest GOLs" opened={opened} onClose={onClose}>
       <AmountTitle size="xsmall" color={theme.textSecondary}>
         Amount <span style={{ color: theme.accent }}>*</span>
       </AmountTitle>
