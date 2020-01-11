@@ -29,9 +29,9 @@ function ClaimHistoryTable({ style = {}, ...props }) {
             l.proof,
           ])}
           renderEntry={([vestingId, amount, start, account, proof]) => [
-            <Text style={{ minWidth: '60px' }}>{vestingId}</Text>,
-            <Text style={{ minWidth: '60px' }}>{formatCurrency(amount)}</Text>,
-            <Text>{start.toLocaleString()}</Text>,
+            <Text style={{ minWidth: '30px' }}>{vestingId}</Text>,
+            <Text style={{ minWidth: '80px' }}>{formatCurrency(amount)}</Text>,
+            <Text style={{ minWidth: '180px' }}>{start.toLocaleString()}</Text>,
             <Link
               style={{ whiteSpace: 'normal' }}
               href={`https://cyberd.ai/account/${account}`}
@@ -46,7 +46,7 @@ function ClaimHistoryTable({ style = {}, ...props }) {
                 {proof}
               </Link>
             ) : (
-              <Text>{DEFAULT_PROOF}</Text>
+              <Text style={{ minWidth: '240px' }}>{DEFAULT_PROOF}</Text>
             ),
           ]}
           mode="table"

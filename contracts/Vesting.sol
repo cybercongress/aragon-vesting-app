@@ -5,7 +5,7 @@ import "@aragon/apps-token-manager/contracts/TokenManager.sol";
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 
 
-contract Claim is AragonApp {
+contract Vesting is AragonApp {
 
     /// Events
     event NewLock(uint256 vestingId, address indexed lockAddress, uint256 amount, string account);
@@ -36,17 +36,14 @@ contract Claim is AragonApp {
     }
 
     /**
-     * @notice Lock `amount` tokens till the end of action and claim `amount` CYBs
-     * @param amount Amount to lock and claim
+     * @notice Vest `amount` GOLs till the end of action and create proposal to claim `amount` EULs
      * @return vesting ID
      */
     function lock(uint256 amount, string memory account) public returns (uint256) {
         require(paused == false, ERROR_LOCK_ON_PAUSE);
 
-        // account example cyber1arvngwny4zxlk2xgzwjvt0w8l78yqr5tvnmue5
-
         bytes memory accountBytes = bytes(account);
-        require(accountBytes.length == 44, ERROR_WRONG_ACCOUNT);
+        require(accountBytes.length == 44, ERROR_WRONG_ACCOUNT); // cyber1arvngwny4zxlk2xgzwjvt0w8l78yqr5tvnmue5
 
         tokenManager.burn(msg.sender, amount);
         tokenManager.issue(amount);

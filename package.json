@@ -1,6 +1,6 @@
 {
-  "name": "cyberclaim",
-  "version": "0.0.1",
+  "name": "cybervesting",
+  "version": "1.0.0",
   "description": "",
   "dependencies": {
     "@aragon/apps-shared-minime": "^1.0.1",

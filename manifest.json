@@ -1,9 +1,9 @@
 {
-  "name": "cyber~Claim",
+  "name": "cyber~Vesting",
   "author": "cyber~Congress",
   "description": "Tokens vesting for claims",
   "details_url": "/meta/details.md",
-  "source_url": "https://github.com/cybercongress/aragon-claim-app",
+  "source_url": "https://github.com/cybercongress/aragon-vesting-app",
   "icons": [
     {
       "src": "/meta/icon.svg",

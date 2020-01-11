@@ -8,8 +8,8 @@ function SummaryTable({ total, available }) {
     <Table>
       <TableRow>
         <TableHeader colSpan="3">
-          <Text color={theme.textSecondary} size="xsmall">
-            After obtaining GOLs during Test of Thrones and Test~Auction you need to vest you GOL tokens until the end of Auction. In this case you will recieve 1 EUL for each vested GOL.
+          <Text color={theme.textSecondary} size="small">
+            Your balances.
           </Text>
         </TableHeader>
       </TableRow>

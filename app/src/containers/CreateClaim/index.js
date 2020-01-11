@@ -17,7 +17,7 @@ function CreateClaim({ containerStyle, ...props }) {
         onClick={() => setSidePanelOpened(true)}
         {...props}
       >
-        Create claim
+        Create vesting
       </Button>
       <CreateClaimSidePanel
         maxValue={transferableBalanceOf}

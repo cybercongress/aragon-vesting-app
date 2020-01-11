@@ -1,6 +1,6 @@
 /* global artifacts */
-var ClaimApp = artifacts.require('ClaimApp.sol')
+var VestingApp = artifacts.require('Vesting.sol')
 
 module.exports = function(deployer) {
-  deployer.deploy(ClaimApp)
+  deployer.deploy(VestingApp)
 }

@@ -3,7 +3,7 @@ import { toChecksumAddress } from 'web3-utils';
 const MILLISECONDS_IN_SECOND = 1000;
 
 const DEFAULT_DECIMAL_DIGITS = 3;
-const DEFAULT_CURRENCY = 'THC';
+const DEFAULT_CURRENCY = 'GOL';
 
 const PREFIXES = [
   {

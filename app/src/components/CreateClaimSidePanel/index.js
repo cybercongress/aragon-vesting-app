@@ -32,7 +32,7 @@ function CreateClaimSidePanel({ opened, onClose, onSubmit, maxValue }) {
         disabled={!isValid}
         onClick={() => onSubmit(amount, account)}
       >
-        Create claim
+        Create vesting
       </Button>
     </SidePanel>
   );
