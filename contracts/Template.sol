@@ -81,7 +81,8 @@ contract Template is TemplateBase, TimeHelpers {
 
         // Initialize apps
         uint64 vestingEnd = getTimestamp64() + uint64(900);
-        app.initialize(tokenManager, vestingEnd); // TODO initialize with auction contract
+        app.initialize(tokenManager, vestingEnd);
+
         tokenManager.initialize(token, true, 0);
         voting.initialize(token, 50 * PCT, 20 * PCT, 1 minutes);
 

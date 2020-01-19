@@ -15,7 +15,7 @@ function App() {
     <Main>
       <AppContainer>
         <Header>
-          <Text size="xlarge">Vesting application</Text>
+          <Text size="xlarge">Dashboard</Text>
           <ClaimButton />
         </Header>
         {isSyncing && <Syncing />}

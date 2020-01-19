@@ -33,20 +33,20 @@ function ClaimHistoryTable({ style = {}, ...props }) {
             <Text style={{ minWidth: '80px' }}>{formatCurrency(amount)}</Text>,
             <Text style={{ minWidth: '180px' }}>{start.toLocaleString()}</Text>,
             <Link
-              style={{ whiteSpace: 'normal' }}
+              style={{ whiteSpace: 'normal', minWidth: '230px' }}
               href={`https://cyberd.ai/account/${account}`}
             >
               {account}
             </Link>,
             proof ? (
               <Link
-                style={{ whiteSpace: 'normal' }}
+                style={{ whiteSpace: 'normal', minWidth: '180px' }}
                 href={`https://cyberd.ai/transactions/${proof}`}
               >
                 {proof}
               </Link>
             ) : (
-              <Text style={{ minWidth: '240px' }}>{DEFAULT_PROOF}</Text>
+              <Text style={{ minWidth: '280px' }}>{DEFAULT_PROOF}</Text>
             ),
           ]}
           mode="table"

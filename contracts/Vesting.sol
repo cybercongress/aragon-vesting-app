@@ -10,6 +10,7 @@ contract Vesting is AragonApp {
     /// Events
     event NewLock(uint256 vestingId, address indexed lockAddress, uint256 amount, string account);
     event NewProof(uint256 vestingId, string proofTx);
+    event Pause(bool state);
 
     /// State
     TokenManager public tokenManager;
@@ -64,9 +65,13 @@ contract Vesting is AragonApp {
 
     function pause() public auth(PAUSE_ROLE) {
         paused = true;
+
+        emit Pause(true);
     }
 
     function unpause() public auth(PAUSE_ROLE) {
         paused = false;
+
+        emit Pause(true);
     }
 }

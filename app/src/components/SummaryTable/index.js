@@ -9,7 +9,7 @@ function SummaryTable({ total, available }) {
       <TableRow>
         <TableHeader colSpan="3">
           <Text color={theme.textSecondary} size="small">
-            Your balances.
+            Your balances
           </Text>
         </TableHeader>
       </TableRow>
