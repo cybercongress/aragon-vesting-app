@@ -17,7 +17,7 @@ function CreateClaim({ containerStyle, ...props }) {
         onClick={() => setSidePanelOpened(true)}
         {...props}
       >
-        Create vesting
+        Vest GOLs
       </Button>
       <CreateClaimSidePanel
         maxValue={transferableBalanceOf}

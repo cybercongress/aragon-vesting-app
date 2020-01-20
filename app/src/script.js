@@ -100,6 +100,10 @@ async function newLock(
   tokenContract,
   { vestingId, lockAddress, amount, account }
 ) {
+  if (!addressesEqual(state.account, lockAddress)) {
+    return state;
+  }
+
   const {
     start,
     cliff,
@@ -140,7 +144,14 @@ async function newLock(
   };
 }
 
-async function newProof(state, { vestingId, proofTx }) {
+async function newProof(
+  state,
+  { claimer, vestingId, proofTx }
+) {
+  if (!addressesEqual(state.account, claimer)) {
+    return state;
+  }
+
   const index = parseInt(vestingId, 10);
   const claim = state.claims && state.claims[index];
 
