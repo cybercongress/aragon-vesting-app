@@ -9,7 +9,7 @@ contract Vesting is AragonApp {
 
     /// Events
     event NewLock(uint256 vestingId, address indexed lockAddress, uint256 amount, string account);
-    event NewProof(address indexed claimer, uint256 vestingId, string proofTx);
+    event NewProof(uint256 vestingId, address indexed claimer, string proofTx);
     event Paused(bool state);
 
     /// State
@@ -103,7 +103,7 @@ contract Vesting is AragonApp {
         proofs[_claimer][_claimId] = _proofTx;
         proofsLength[_claimer] += 1;
 
-        emit NewProof(_claimer, _claimId, _proofTx);
+        emit NewProof(_claimId, _claimer, _proofTx);
     }
 
     function getClaimAddress(

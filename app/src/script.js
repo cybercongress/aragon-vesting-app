@@ -146,7 +146,7 @@ async function newLock(
 
 async function newProof(
   state,
-  { claimer, vestingId, proofTx }
+  { vestingId, claimer, proofTx }
 ) {
   if (!addressesEqual(state.account, claimer)) {
     return state;
