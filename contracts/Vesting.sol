@@ -17,11 +17,17 @@ contract Vesting is AragonApp {
     uint64 public vestingEnd;
     bool public paused;
 
-    mapping (address => mapping (uint256 => string)) internal proofs;
-    mapping (address => uint256) public proofsLength;
-
+    // in general case vestingsLength > claimsLength >= proofsLength
     mapping (address => mapping (uint256 => string)) internal claims;
-    mapping (address => uint256) public claimsLength;
+    mapping (address => mapping (uint256 => string)) internal proofs;
+
+    struct ClaimEntry {
+        address claimer;
+        uint256 personalVestingId;
+    }
+
+    mapping (uint256 => ClaimEntry) internal history;
+    uint256 public historyLength;
 
     /// ACL
     bytes32 constant public PAUSE_ROLE = keccak256("PAUSE_ROLE");
@@ -32,19 +38,6 @@ contract Vesting is AragonApp {
     string private constant ERROR_WRONG_ACCOUNT = "WRONG_ACCOUNT";
     string private constant ERROR_PAST_END = "PAST_END";
     string private constant ERROR_NO_BALANCE = "NO_BALANCE";
-    string private constant ERROR_NO_CLAIM = "NO_CLAIM";
-    string private constant ERROR_NO_PROOF = "NO_PROOF";
-
-    /// MODIDIERS
-    modifier claimExists(address _holder, uint256 _claimId) {
-        require(_claimId < claimsLength[_holder], ERROR_NO_CLAIM);
-        _;
-    }
-
-    modifier proofExists(address _holder, uint256 _proofId) {
-        require(_proofId < proofsLength[_holder], ERROR_NO_PROOF);
-        _;
-    }
 
     function initialize(
         address _tokenManager,
@@ -73,9 +66,9 @@ contract Vesting is AragonApp {
         returns (uint256)
     {
         require(paused == false, ERROR_LOCK_ON_PAUSE);
-
+        // cyber1arvngwny4zxlk2xgzwjvt0w8l78yqr5tvnmue5
         bytes memory accountBytes = bytes(account);
-        require(accountBytes.length == 44, ERROR_WRONG_ACCOUNT); // cyber1arvngwny4zxlk2xgzwjvt0w8l78yqr5tvnmue5
+        require(accountBytes.length == 44, ERROR_WRONG_ACCOUNT);
 
         require(tokenManager.spendableBalanceOf(msg.sender) >= amount, ERROR_NO_BALANCE);
 
@@ -85,7 +78,12 @@ contract Vesting is AragonApp {
         uint256 claimId = tokenManager.assignVested(msg.sender, amount, getTimestamp64(), vestingEnd, vestingEnd, false);
 
         claims[msg.sender][claimId] = account;
-        claimsLength[msg.sender] += 1;
+
+        history[historyLength] = (ClaimEntry({
+            claimer: msg.sender,
+            personalVestingId: claimId
+        }));
+        historyLength += 1;
 
         emit NewLock(claimId, msg.sender, amount, account);
 
@@ -101,7 +99,6 @@ contract Vesting is AragonApp {
         auth(PROOF_ROLE)
     {
         proofs[_claimer][_claimId] = _proofTx;
-        proofsLength[_claimer] += 1;
 
         emit NewProof(_claimId, _claimer, _proofTx);
     }
@@ -112,10 +109,9 @@ contract Vesting is AragonApp {
     )
         public
         view
-        claimExists(_claimer, _claimId)
-        returns (string addr)
+        returns (string)
     {
-        addr = claims[_claimer][_claimId];
+        return claims[_claimer][_claimId];
     }
 
     function getProof(
@@ -124,10 +120,19 @@ contract Vesting is AragonApp {
     )
         public
         view
-        proofExists(_claimer, _claimId)
-        returns (string proof)
+        returns (string)
     {
-        proof = proofs[_claimer][_claimId];
+        return proofs[_claimer][_claimId];
+    }
+
+    function getHistory(uint256 _claimId)
+        public
+        view
+        returns (address, uint256)
+    {
+        ClaimEntry storage claimEntry = history[_claimId];
+
+        return (claimEntry.claimer, claimEntry.personalVestingId);
     }
 
     function pause() public auth(PAUSE_ROLE) {
