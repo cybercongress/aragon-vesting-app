@@ -19,7 +19,7 @@ function SummaryTable({ total, available }) {
             <Text color={theme.textSecondary}>Total</Text>
             <br />
             <Text size="xxlarge" color={theme.positive}>
-              {formatCurrency(total)}
+              {formatCurrency(total, 'GOL', 6)}
             </Text>
           </div>
         </TableCell>
@@ -27,14 +27,14 @@ function SummaryTable({ total, available }) {
           <div>
             <Text color={theme.textSecondary}>Vested</Text>
             <br />
-            <Text size="xxlarge">{formatCurrency(total - available)}</Text>
+            <Text size="xxlarge">{formatCurrency(total - available, 'GOL', 6)}</Text>
           </div>
         </TableCell>
         <TableCell>
           <div>
             <Text color={theme.textSecondary}>Available</Text>
             <br />
-            <Text size="xxlarge">{formatCurrency(available)}</Text>
+            <Text size="xxlarge">{formatCurrency(available, 'GOL', 6)}</Text>
           </div>
         </TableCell>
       </TableRow>

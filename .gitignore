@@ -8,3 +8,5 @@ coverage.json
 coverage
 .idea
 ClaimFull.sol
+
+.DS_Store

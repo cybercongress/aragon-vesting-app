@@ -32,18 +32,3 @@ In project root
 ```
 npm run start:ipfs:template
 ```
-
-## Debug
-[eth-cli](https://github.com/protofire/eth-cli)
-
-```
-eth conf:abi:add claim build/contracts/Claim.json
-eth repl claim@<appAddress>
-> claim.methods.transferableBalanceOf("0xb4124cEB3451635DAcedd11767f004d8a28c6eE7").call()
-'9'
->  claim.methods.balanceOf("0xb4124cEB3451635DAcedd11767f004d8a28c6eE7").call()
-'10'
-```
-
-## Proposed Front
-[figma](https://www.figma.com/file/6RyVF5IW2j8bBO1aCkU4lF/Claim-app?node-id=1%3A2280)

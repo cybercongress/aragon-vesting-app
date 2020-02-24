@@ -29,24 +29,24 @@ function ClaimHistoryTable({ style = {}, ...props }) {
             l.proof,
           ])}
           renderEntry={([vestingId, amount, start, account, proof]) => [
-            <Text style={{ minWidth: '30px' }}>{vestingId}</Text>,
-            <Text style={{ minWidth: '120px' }}>{formatCurrency(amount)}</Text>,
-            <Text style={{ maxWidth: '100px' }}>{start.toLocaleString()}</Text>,
+            <Text style={{ width: '30px' }}>{vestingId}</Text>,
+            <Text style={{ minWidth: '90px', maxWidth: '130px' }}>{formatCurrency(amount, 'GOL', 5)}</Text>,
+            <Text style={{ width: '100px' }}>{start.toLocaleString()}</Text>,
             <Link
-              style={{ whiteSpace: 'normal', minWidth: '230px' }}
+              style={{ whiteSpace: 'normal', width: '260px' }}
               href={`https://cyberd.ai/account/${account}`}
             >
               {account}
             </Link>,
             proof ? (
               <Link
-                style={{ whiteSpace: 'normal', minWidth: '180px' }}
+                style={{ whiteSpace: 'normal', minWidth: '260px', width: '340px' }}
                 href={`https://cyberd.ai/transactions/${proof}`}
               >
                 {proof}
               </Link>
             ) : (
-              <Text style={{ minWidth: '280px' }}>{DEFAULT_PROOF}</Text>
+              <Text style={{ minWidth: '260px', width: '260px' }}>{DEFAULT_PROOF}</Text>
             ),
           ]}
           mode="table"

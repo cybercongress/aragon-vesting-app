@@ -18,7 +18,7 @@ const reducer = state => {
     return {
       ...state,
       userClaims: state.claims
-        .filter(({ lockAddress }) => addressesEqual(state.account, lockAddress))
+        .filter(({ claimer }) => addressesEqual(state.account, claimer))
         .reverse(),
     };
   }

@@ -1,12 +1,12 @@
 {
   "roles": [
     {
-      "name": "Pause Vestings",
+      "name": "Pause operations",
       "id": "PAUSE_ROLE",
       "params": []
     },
     {
-      "name": "Add Proof for Vesting",
+      "name": "Add proofs",
       "id": "PROOF_ROLE",
       "params": []
     }

@@ -98,9 +98,9 @@ async function newLock(
   state,
   tokenManagerContract,
   tokenContract,
-  { vestingId, lockAddress, amount, account }
+  { vestingId, claimer, amount, account, historyId }
 ) {
-  if (!addressesEqual(state.account, lockAddress)) {
+  if (!addressesEqual(state.account, claimer)) {
     return state;
   }
 
@@ -132,7 +132,7 @@ async function newLock(
         vestingId,
         account,
         revokable,
-        lockAddress,
+        claimer,
         start: convertDate(start),
         cliff: convertDate(cliff),
         vesting: convertDate(vesting),

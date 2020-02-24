@@ -8,14 +8,26 @@ import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 contract Vesting is AragonApp {
 
     /// Events
-    event NewLock(uint256 vestingId, address indexed lockAddress, uint256 amount, string account);
-    event NewProof(uint256 vestingId, address indexed claimer, string proofTx);
+    event NewLock(
+        uint256 vestingId,
+        address indexed claimer,
+        uint256 amount,
+        string  account,
+        uint256 historyId
+    );
+
+    event NewProof(
+        uint256 vestingId,
+        address indexed claimer,
+        string  proofTx
+    );
+
     event Paused(bool state);
 
     /// State
     TokenManager public tokenManager;
-    uint64 public vestingEnd;
-    bool public paused;
+    uint64       public vestingEnd;
+    bool         public paused;
 
     // in general case vestingsLength > claimsLength >= proofsLength
     mapping (address => mapping (uint256 => string)) internal claims;
@@ -27,7 +39,7 @@ contract Vesting is AragonApp {
     }
 
     mapping (uint256 => ClaimEntry) internal history;
-    uint256 public historyLength;
+    uint256 public historyId;
 
     /// ACL
     bytes32 constant public PAUSE_ROLE = keccak256("PAUSE_ROLE");
@@ -36,12 +48,12 @@ contract Vesting is AragonApp {
     /// ERRORS
     string private constant ERROR_LOCK_ON_PAUSE = "LOCK_ON_PAUSE";
     string private constant ERROR_WRONG_ACCOUNT = "WRONG_ACCOUNT";
-    string private constant ERROR_PAST_END = "PAST_END";
-    string private constant ERROR_NO_BALANCE = "NO_BALANCE";
+    string private constant ERROR_PAST_END      = "PAST_END";
+    string private constant ERROR_NO_BALANCE    = "NO_BALANCE";
 
     function initialize(
         address _tokenManager,
-        uint64 _vestingEnd
+        uint64  _vestingEnd
     )
         public
         onlyInit
@@ -55,37 +67,50 @@ contract Vesting is AragonApp {
     }
 
     /**
-     * @notice Vest `amount` GOLs till the end of action and create proposal to claim `amount` EULs to account `account`
+     * @notice Vest `amount` GOLs till the end of action and create proposal to claim `_amount` EULs to account `_account`
      * @return vesting ID
      */
     function lock(
-        uint256 amount,
-        string memory account
+        uint256 _amount,
+        string  memory _account
     )
         public
         returns (uint256)
     {
         require(paused == false, ERROR_LOCK_ON_PAUSE);
-        // cyber1arvngwny4zxlk2xgzwjvt0w8l78yqr5tvnmue5
-        bytes memory accountBytes = bytes(account);
+
+        bytes memory accountBytes = bytes(_account);
         require(accountBytes.length == 44, ERROR_WRONG_ACCOUNT);
 
-        require(tokenManager.spendableBalanceOf(msg.sender) >= amount, ERROR_NO_BALANCE);
+        require(tokenManager.spendableBalanceOf(msg.sender) >= _amount, ERROR_NO_BALANCE);
 
-        tokenManager.burn(msg.sender, amount);
-        tokenManager.issue(amount);
+        tokenManager.burn(msg.sender, _amount);
+        tokenManager.issue(_amount);
 
-        uint256 claimId = tokenManager.assignVested(msg.sender, amount, getTimestamp64(), vestingEnd, vestingEnd, false);
+        uint256 claimId = tokenManager.assignVested(
+            msg.sender,
+            _amount,
+            getTimestamp64(),
+            vestingEnd,
+            vestingEnd,
+            false
+        );
 
-        claims[msg.sender][claimId] = account;
+        claims[msg.sender][claimId] = _account;
 
-        history[historyLength] = (ClaimEntry({
+        history[historyId] = (ClaimEntry({
             claimer: msg.sender,
             personalVestingId: claimId
         }));
-        historyLength += 1;
 
-        emit NewLock(claimId, msg.sender, amount, account);
+        emit NewLock(
+            claimId,
+            msg.sender,
+            _amount,
+            _account,
+            historyId
+        );
+        historyId += 1;
 
         return claimId;
     }
@@ -93,7 +118,7 @@ contract Vesting is AragonApp {
     function addProof(
         address _claimer,
         uint256 _claimId,
-        string memory _proofTx
+        string  memory _proofTx
     )
         public
         auth(PROOF_ROLE)
@@ -135,12 +160,18 @@ contract Vesting is AragonApp {
         return (claimEntry.claimer, claimEntry.personalVestingId);
     }
 
-    function pause() public auth(PAUSE_ROLE) {
+    function pause()
+        public
+        auth(PAUSE_ROLE)
+    {
         paused = true;
         emit Paused(true);
     }
 
-    function unpause() public auth(PAUSE_ROLE) {
+    function unpause()
+        public
+        auth(PAUSE_ROLE)
+    {
         paused = false;
         emit Paused(false);
     }

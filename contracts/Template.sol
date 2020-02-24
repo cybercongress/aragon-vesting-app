@@ -91,8 +91,8 @@ contract Template is TemplateBase, TimeHelpers {
         acl.createPermission(app, tokenManager, tokenManager.ISSUE_ROLE(), this);
         acl.createPermission(app, tokenManager, tokenManager.ASSIGN_ROLE(), this);
         acl.createPermission(app, tokenManager, tokenManager.BURN_ROLE(), this);
-        acl.createPermission(ANY_ENTITY, app, app.PAUSE_ROLE(), this);
-        acl.createPermission(ANY_ENTITY, app, app.PROOF_ROLE(), this);
+        acl.createPermission(root, app, app.PAUSE_ROLE(), this);
+        acl.createPermission(root, app, app.PROOF_ROLE(), this);
 
         acl.setPermissionManager(voting, app, app.PAUSE_ROLE());
         acl.setPermissionManager(voting, app, app.PROOF_ROLE());
