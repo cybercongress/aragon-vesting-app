@@ -11,10 +11,7 @@
     }
   ],
   "screenshots": [
-    { "src": "public/meta/main-1.png" },
-    { "src": "public/meta/vest-1.png" },
-    { "src": "public/meta/vest-2.png" },
-    { "src": "public/meta/main-2.png" }
+    { "src": "public/meta/main-1.png" }
   ],
   "start_url": "/index.html",
   "script": "/script.js"
