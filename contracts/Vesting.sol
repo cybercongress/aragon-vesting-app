@@ -67,12 +67,11 @@ contract Vesting is AragonApp {
     }
 
     /**
-     * @notice Vest `amount` GOLs till the end of action and create proposal to claim `_amount` EULs to account `_account`
-     * @return vesting ID
+     * @notice I want to vest `_amount` GOLs and recieve `_amount` EULs to `_account`
      */
     function lock(
         uint256 _amount,
-        string  memory _account
+        string memory _account
     )
         public
         returns (uint256)
