@@ -4,7 +4,15 @@ import { Text, DataView, Link } from '@aragon/ui';
 import { formatCurrency } from '../../lib/web3-utils';
 
 const PAGINATION = 10;
-const DEFAULT_PROOF = 'Processing by cyber~Congress';
+const DEFAULT_PROOF = 'Processing...';
+
+function truncStringPortion(str, firstCharCount = str.length, endCharCount = 0, dotCount = 3) {
+	var convertedStr="";
+	convertedStr+=str.substring(0, firstCharCount);
+	convertedStr += ".".repeat(dotCount);
+	convertedStr+=str.substring(str.length-endCharCount, str.length);
+	return convertedStr;
+}
 
 function ClaimHistoryTable({ style = {}, ...props }) {
   const { appState } = useAragonApi();
@@ -31,22 +39,22 @@ function ClaimHistoryTable({ style = {}, ...props }) {
           renderEntry={([vestingId, amount, start, account, proof]) => [
             <Text style={{ width: '30px' }}>{vestingId}</Text>,
             <Text style={{ minWidth: '90px', maxWidth: '130px' }}>{formatCurrency(amount, 'GOL', 5)}</Text>,
-            <Text style={{ width: '100px' }}>{start.toLocaleString()}</Text>,
+            <Text style={{ width: '170px' }}>{start.toLocaleString()}</Text>,
             <Link
-              style={{ whiteSpace: 'normal', width: '260px' }}
-              href={`https://cyberd.ai/account/${account}`}
+              style={{}}
+              href={`https://cyber.page/network/euler/contract/${account}`}
             >
               {account}
             </Link>,
             proof ? (
               <Link
-                style={{ whiteSpace: 'normal', minWidth: '260px', width: '340px' }}
-                href={`https://cyberd.ai/transactions/${proof}`}
+                style={{}}
+                href={`https://cyber.page/network/euler/tx/${proof}`}
               >
-                {proof}
+                {truncStringPortion(proof, 6, 6, 3)}
               </Link>
             ) : (
-              <Text style={{ minWidth: '260px', width: '260px' }}>{DEFAULT_PROOF}</Text>
+              <Text style={{$}}>{DEFAULT_PROOF}</Text>
             ),
           ]}
           mode="table"
