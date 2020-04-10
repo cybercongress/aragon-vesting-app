@@ -19,7 +19,9 @@ function App() {
           <ClaimButton />
         </Header>
         {isSyncing && <Syncing />}
-        <Intro title="Information  ">After obtaining GOLs during Test of Thrones and Test~Auction you need to vest you GOL tokens until the end of Auction. In this case you will recieve 1 EUL for each vested GOL.</Intro>  
+        <Intro title="Information  ">
+          The Vesting app is used to vest your cyber~Foundation tokens (GOL) until the end of cyber~Auction. It is also used to claim an equivalent, 1-to-1, amount of tokens in the Cyber blockchain (if the Foundation tokens are vested).
+        </Intro>  
         <ClaimTable />
         <ClaimHistory />
       </AppContainer>
