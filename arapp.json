@@ -12,6 +12,10 @@
     }
   ],
   "environments": {
+    "default": {
+      "network": "rpc",
+      "appName": "cybervesting.open.aragonpm.eth"
+    },
     "aragon:local": {
       "network": "development",
       "appName": "cybervesting.open.aragonpm.eth"
@@ -39,5 +43,6 @@
       "network": "mainnet"
     }
   },
-  "path": "contracts/Vesting.sol"
+  "path": "contracts/Vesting.sol",
+  "appName": "cybervesting.open.aragonpm.eth"
 }
