@@ -54,7 +54,7 @@ function ClaimHistoryTable({ style = {}, ...props }) {
                 {truncStringPortion(proof, 6, 6, 3)}
               </Link>
             ) : (
-              <Text style={{$}}>{DEFAULT_PROOF}</Text>
+              <Text style={{}}>{DEFAULT_PROOF}</Text>
             ),
           ]}
           mode="table"
